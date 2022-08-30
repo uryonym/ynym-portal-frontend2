@@ -30,7 +30,7 @@ const Task: NextPage = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/v1/tasks').then((response) => {
+    axios.get('http://ynym-portal-backend:5000/api/v1/tasks').then((response) => {
       setTasks(response.data)
     })
   }, [])
