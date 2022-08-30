@@ -39,7 +39,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       },
     }
     axios
-      .patch(`http://ynym-portal-backend:5000/api/v1/tasks/${task.id}`, data)
+      .patch(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`, data)
       .then((response) => {
         setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
         onClose()
@@ -49,7 +49,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://ynym-portal-backend:5000/api/v1/tasks/${task.id}`)
+      .delete(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`)
       .then(() => {
         setTasks((prevState) => prevState.filter((x) => x.id !== task.id))
         onClose()
@@ -65,7 +65,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
     }
 
     axios
-      .patch(`http://ynym-portal-backend:5000/api/v1/tasks/${task.id}`, data)
+      .patch(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`, data)
       .then((response) => {
         setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
         onClose()

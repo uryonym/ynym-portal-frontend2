@@ -29,7 +29,7 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
       },
     }
     axios
-      .post('http://ynym-portal-backend:5000/api/v1/tasks', data)
+      .post('http://portal.uryonym.com:5000/api/v1/tasks', data)
       .then((response) => {
         setTasks((prevState) => [...prevState, response.data])
         onClose()
