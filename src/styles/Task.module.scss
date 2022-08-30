@@ -1,0 +1,11 @@
+.container {
+  padding: 0 1rem;
+}
+
+.drawer {
+  :global {
+    .MuiDrawer-paper {
+      width: 100%;
+    }
+  }
+}
