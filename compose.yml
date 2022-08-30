@@ -1,0 +1,14 @@
+services:
+
+  ynym-portal-frontend:
+    build: .
+    image: ynym-portal-frontend
+    container_name: ynym-portal-frontend
+    hostname: ynym-portal-frontend
+    restart: always
+    ports:
+      - 8080:3000
+
+networks:
+  default:
+    name: ynym-portal-network
