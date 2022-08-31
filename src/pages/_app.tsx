@@ -1,14 +1,22 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { CssBaseline, StyledEngineProvider } from '@mui/material'
+import { createTheme, CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material'
 import { FC } from 'react'
+
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+})
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   return (
-    <StyledEngineProvider injectFirst>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </StyledEngineProvider>
+    <ThemeProvider theme={lightTheme}>
+      <StyledEngineProvider injectFirst>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </StyledEngineProvider>
+    </ThemeProvider>
   )
 }
 
