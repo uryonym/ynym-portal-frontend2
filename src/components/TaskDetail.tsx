@@ -2,7 +2,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import DescriptionIcon from '@mui/icons-material/Description'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { AppBar, Box, Button, IconButton, InputAdornment, TextField, Toolbar } from '@mui/material'
-import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import axios from 'axios'
@@ -22,7 +22,6 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [deadLine, setDeadLine] = useState<Date | undefined | null>(undefined)
-  const titleInputRef = useRef<HTMLInputElement>()
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
@@ -76,12 +75,6 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
   }
 
   useEffect(() => {
-    if (titleInputRef.current) {
-      titleInputRef.current.focus()
-    }
-  }, [])
-
-  useEffect(() => {
     setTitle(task.title)
     setDescription(task.description || '')
     setDeadLine(task.dead_line)
@@ -97,7 +90,6 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
           variant='standard'
           value={title}
           onChange={handleChangeTitle}
-          inputRef={titleInputRef}
         />
         <LocalizationProvider dateAdapter={AdapterLuxon}>
           <MobileDatePicker
