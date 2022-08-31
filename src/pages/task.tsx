@@ -65,7 +65,7 @@ const Task: NextPage = () => {
             <ListItemIcon>
               <Checkbox defaultChecked disableRipple />
             </ListItemIcon>
-            <ListItemText primary={task.title} />
+            <ListItemText primary={task.title} sx={{ textDecoration: 'line-through' }} />
           </ListItemButton>
         </ListItem>
       )
