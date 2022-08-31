@@ -19,6 +19,8 @@ import { useEffect, useState } from 'react'
 import styles from '@/styles/Task.module.scss'
 
 const Task: NextPage = () => {
+  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
+
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false)
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
@@ -30,7 +32,7 @@ const Task: NextPage = () => {
   }
 
   useEffect(() => {
-    axios.get('http://portal.uryonym.com:5000/api/v1/tasks').then((response) => {
+    axios.get(`${apiUrl}/tasks`).then((response) => {
       setTasks(response.data)
     })
   }, [])

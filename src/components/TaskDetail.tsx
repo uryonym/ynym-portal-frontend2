@@ -17,6 +17,8 @@ type TaskDetailProps = {
 }
 
 const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
+  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
+
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [deadLine, setDeadLine] = useState<Date | undefined | null>(undefined)
@@ -39,7 +41,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       },
     }
     axios
-      .patch(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`, data)
+      .patch(`${apiUrl}/tasks/${task.id}`, data)
       .then((response) => {
         setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
         onClose()
@@ -49,7 +51,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`)
+      .delete(`${apiUrl}/tasks/${task.id}`)
       .then(() => {
         setTasks((prevState) => prevState.filter((x) => x.id !== task.id))
         onClose()
@@ -65,7 +67,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
     }
 
     axios
-      .patch(`http://portal.uryonym.com:5000/api/v1/tasks/${task.id}`, data)
+      .patch(`${apiUrl}/tasks/${task.id}`, data)
       .then((response) => {
         setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
         onClose()

@@ -13,6 +13,8 @@ type TaskNewProps = {
 }
 
 const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
+  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
+
   const [title, setTitle] = useState<string>('')
   const [deadLine, setDeadLine] = useState<Date | null>(null)
   const titleInputRef = useRef<HTMLInputElement>()
@@ -29,7 +31,7 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
       },
     }
     axios
-      .post('http://portal.uryonym.com:5000/api/v1/tasks', data)
+      .post(`${apiUrl}/tasks`, data)
       .then((response) => {
         setTasks((prevState) => [...prevState, response.data])
         onClose()
