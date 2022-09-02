@@ -21,6 +21,7 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import styles from '@/styles/Task.module.scss'
 import { ExpandMore } from '@mui/icons-material'
+import { fbAuth } from '@/lib/firebaseConfig'
 
 const Task: NextPage = () => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
@@ -36,10 +37,17 @@ const Task: NextPage = () => {
   }
 
   useEffect(() => {
-    axios.get(`${apiUrl}/tasks`).then((response) => {
-      setTasks(response.data)
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios.get(`${apiUrl}/tasks`, config).then((response) => {
+        setTasks(response.data)
+      })
     })
-  }, [])
+  }, [apiUrl])
 
   const taskList = tasks
     .filter((x) => !x.is_complete)

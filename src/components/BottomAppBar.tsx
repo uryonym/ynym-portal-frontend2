@@ -13,10 +13,12 @@ import {
   Toolbar,
 } from '@mui/material'
 import { FC, useState } from 'react'
+import Router from 'next/router'
+import { logout } from '@/lib/firebaseAuth'
 import styles from '@/styles/BottomAppBar.module.scss'
 
 type BottomAppBarProps = {
-  onAddTask: () => void
+  onAddTask?: () => void
 }
 
 const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
@@ -30,12 +32,12 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
     <Box onClick={toggleDrawer(false)}>
       <List className={styles.list}>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => Router.push('/')}>
             <ListItemText primary='ホーム' />
           </ListItemButton>
         </ListItem>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => Router.push('task')}>
             <ListItemText primary='タスク' />
           </ListItemButton>
         </ListItem>
@@ -43,7 +45,7 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
       <Divider />
       <List className={styles.list}>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => logout()}>
             <ListItemText primary='ログアウト' />
           </ListItemButton>
         </ListItem>
@@ -58,9 +60,11 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
           <IconButton color='inherit' onClick={toggleDrawer(true)}>
             <Menu />
           </IconButton>
-          <Fab className={styles.fabBtn} color='secondary' onClick={onAddTask}>
-            <Add />
-          </Fab>
+          {onAddTask && (
+            <Fab className={styles.fabBtn} color='secondary' onClick={onAddTask}>
+              <Add />
+            </Fab>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer anchor='bottom' open={isOpen} onClose={toggleDrawer(false)}>
