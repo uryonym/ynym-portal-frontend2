@@ -22,6 +22,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import styles from '@/styles/Task.module.scss'
 import { ExpandMore } from '@mui/icons-material'
 import { fbAuth } from '@/lib/firebaseConfig'
+import { useAuthContext } from '@/context/AuthContext'
 
 const Task: NextPage = () => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
@@ -30,6 +31,7 @@ const Task: NextPage = () => {
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
   const [tasks, setTasks] = useState<Task[]>([])
+  const { currentUser } = useAuthContext()
 
   const handleClickTask = (task: Task) => () => {
     setTask(task)
@@ -70,7 +72,7 @@ const Task: NextPage = () => {
         setTasks(response.data)
       })
     })
-  }, [])
+  }, [currentUser])
 
   const taskList = tasks
     .filter((x) => !x.is_complete)
