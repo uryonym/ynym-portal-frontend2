@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import styles from '@/styles/Task.module.scss'
 import { ExpandMore } from '@mui/icons-material'
 import { fbAuth } from '@/lib/firebaseConfig'
@@ -36,6 +36,29 @@ const Task: NextPage = () => {
     setIsDetailOpen(true)
   }
 
+  const handleChangeCheck = (id?: string) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (id) {
+      fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+        const data = {
+          task: {
+            is_complete: e.target.checked,
+          },
+        }
+        const config = {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+        axios
+          .patch(`${apiUrl}/tasks/${id}`, data, config)
+          .then((response) => {
+            setTasks((tasks) => tasks.map((x) => (x.id === id ? response.data : x)))
+          })
+          .catch((error) => console.log(error))
+      })
+    }
+  }
+
   useEffect(() => {
     fbAuth.currentUser?.getIdToken(true).then((idToken) => {
       const config = {
@@ -47,18 +70,18 @@ const Task: NextPage = () => {
         setTasks(response.data)
       })
     })
-  }, [apiUrl])
+  }, [])
 
   const taskList = tasks
     .filter((x) => !x.is_complete)
     .map((task: Task, index, array) => {
       return (
         <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
-          <ListItemButton dense onClick={handleClickTask(task)}>
+          <ListItemButton dense>
             <ListItemIcon>
-              <Checkbox disableRipple />
+              <Checkbox disableRipple onChange={handleChangeCheck(task.id)} />
             </ListItemIcon>
-            <ListItemText primary={task.title} />
+            <ListItemText primary={task.title} onClick={handleClickTask(task)} />
           </ListItemButton>
         </ListItem>
       )
@@ -69,11 +92,15 @@ const Task: NextPage = () => {
     .map((task: Task, index, array) => {
       return (
         <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
-          <ListItemButton dense onClick={handleClickTask(task)}>
+          <ListItemButton dense>
             <ListItemIcon>
-              <Checkbox defaultChecked disableRipple />
+              <Checkbox defaultChecked disableRipple onChange={handleChangeCheck(task.id)} />
             </ListItemIcon>
-            <ListItemText primary={task.title} sx={{ textDecoration: 'line-through' }} />
+            <ListItemText
+              primary={task.title}
+              onClick={handleClickTask(task)}
+              sx={{ textDecoration: 'line-through' }}
+            />
           </ListItemButton>
         </ListItem>
       )
