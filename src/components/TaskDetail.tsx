@@ -74,19 +74,25 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
   }
 
   const handleClickComplete = () => {
-    const data = {
-      task: {
-        is_complete: !task.is_complete,
-      },
-    }
-
-    axios
-      .patch(`${apiUrl}/tasks/${task.id}`, data)
-      .then((response) => {
-        setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
-        onClose()
-      })
-      .catch((error) => console.log(error))
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const data = {
+        task: {
+          is_complete: !task.is_complete,
+        },
+      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios
+        .patch(`${apiUrl}/tasks/${task.id}`, data, config)
+        .then((response) => {
+          setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
+          onClose()
+        })
+        .catch((error) => console.log(error))
+    })
   }
 
   useEffect(() => {
