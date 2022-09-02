@@ -6,6 +6,7 @@ import axios from 'axios'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import styles from '@/styles/TaskNew.module.scss'
 import { Task } from '@/models'
+import { fbAuth } from '@/lib/firebaseConfig'
 
 type TaskNewProps = {
   setTasks: Dispatch<SetStateAction<Task[]>>
@@ -24,19 +25,26 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
   }
 
   const handleSave = () => {
-    const data = {
-      task: {
-        title,
-        dead_line: deadLine,
-      },
-    }
-    axios
-      .post(`${apiUrl}/tasks`, data)
-      .then((response) => {
-        setTasks((prevState) => [...prevState, response.data])
-        onClose()
-      })
-      .catch((error) => console.log(error))
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const data = {
+        task: {
+          title,
+          dead_line: deadLine,
+        },
+      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios
+        .post(`${apiUrl}/tasks`, data, config)
+        .then((response) => {
+          setTasks((prevState) => [...prevState, response.data])
+          onClose()
+        })
+        .catch((error) => console.log(error))
+    })
   }
 
   useEffect(() => {

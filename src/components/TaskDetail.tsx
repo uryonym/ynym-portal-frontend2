@@ -9,6 +9,7 @@ import axios from 'axios'
 import styles from '@/styles/TaskDetail.module.scss'
 import { Task } from '@/models'
 import { Stack } from '@mui/system'
+import { fbAuth } from '@/lib/firebaseConfig'
 
 type TaskDetailProps = {
   task: Task
@@ -32,30 +33,44 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
   }
 
   const handleSave = () => {
-    const data = {
-      task: {
-        title,
-        description,
-        dead_line: deadLine,
-      },
-    }
-    axios
-      .patch(`${apiUrl}/tasks/${task.id}`, data)
-      .then((response) => {
-        setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
-        onClose()
-      })
-      .catch((error) => console.log(error))
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const data = {
+        task: {
+          title,
+          description,
+          dead_line: deadLine,
+        },
+      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios
+        .patch(`${apiUrl}/tasks/${task.id}`, data, config)
+        .then((response) => {
+          setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
+          onClose()
+        })
+        .catch((error) => console.log(error))
+    })
   }
 
   const handleDelete = () => {
-    axios
-      .delete(`${apiUrl}/tasks/${task.id}`)
-      .then(() => {
-        setTasks((prevState) => prevState.filter((x) => x.id !== task.id))
-        onClose()
-      })
-      .catch((error) => console.log(error))
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios
+        .delete(`${apiUrl}/tasks/${task.id}`, config)
+        .then(() => {
+          setTasks((prevState) => prevState.filter((x) => x.id !== task.id))
+          onClose()
+        })
+        .catch((error) => console.log(error))
+    })
   }
 
   const handleClickComplete = () => {
