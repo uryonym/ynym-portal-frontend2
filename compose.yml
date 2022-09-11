@@ -9,6 +9,34 @@ services:
     ports:
       - 8080:3000
 
+  nginx-proxy:
+    image: nginx
+    container_name: nginx-proxy
+    hostname: nginx-proxy
+    command: "/bin/sh -c 'while :; do sleep 36h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    restart: always
+    environment:
+      TZ: Asia/Tokyo
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/log:/var/log/nginx
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/letsencrypt:/etc/letsencrypt
+  
+  certbot:
+    image: certbot/certbot:arm64v8-latest
+    container_name: certbot
+    hostname: certbot
+    restart: always
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/letsencrypt:/etc/letsencrypt
+      - ./nginx/log_letsencrypt:/var/log/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
 networks:
   default:
     name: ynym-portal-network

@@ -1,8 +1,10 @@
-Dockerfile
+.git/
+.gitignore
+.next/
 .dockerignore
+Dockerfile
 compose.yml
-node_modules
+node_modules/
 npm-debug.log
+nginx/
 README.md
-.next
-.git
