@@ -6,8 +6,6 @@ services:
     container_name: ynym-portal-frontend
     hostname: ynym-portal-frontend
     restart: always
-    ports:
-      - 3000:3000
 
   nginx-proxy:
     image: nginx
