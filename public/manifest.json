@@ -3,7 +3,7 @@
     "background_color": "#f69435",
     "display": "standalone",
     "scope": "/",
-    "start_url": "http://portal.uryonym.com:8080",
+    "start_url": "https://portal.uryonym.com",
     "name": "ynym-portal",
     "short_name": "ynymportal",
     "icons": [
