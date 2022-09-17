@@ -6,23 +6,13 @@ services:
     container_name: ynym-portal-frontend
     hostname: ynym-portal-frontend
     restart: always
-
-  nginx-proxy:
-    image: nginx
-    container_name: nginx-proxy
-    hostname: nginx-proxy
-    restart: always
-    environment:
-      TZ: Asia/Tokyo
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/log:/var/log/nginx
-      - ./nginx/html:/usr/share/nginx/html
-      - /etc/letsencrypt:/etc/letsencrypt
+    networks:
+      - default
+      - proxy-network
 
 networks:
   default:
     name: ynym-portal-network
+    external: true
+  proxy-network:
+    external: true

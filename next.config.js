@@ -11,7 +11,7 @@ const nextConfig = {
   output: 'standalone',
   env: {
     developmentUrl: 'http://localhost:5000/api/v1',
-    productionUrl: 'https://portal.uryonym.com:5000/api/v1',
+    productionUrl: 'https://api-portal.uryonym.com/api/v1',
     firebaseApiKey: 'AIzaSyDaVj_9rgkspOTMTn9pQxeXwI2X_8Kisgg',
     firebaseAuthDomain: 'ynym-portal-25b29.firebaseapp.com',
     firebaseProjectId: 'ynym-portal-25b29',
