@@ -77,13 +77,14 @@ const Task: NextPage = () => {
   const taskList = tasks
     .filter((x) => !x.is_complete)
     .map((task: Task, index, array) => {
+      const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
       return (
         <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
           <ListItemButton dense>
             <ListItemIcon>
               <Checkbox disableRipple onChange={handleChangeCheck(task.id)} />
             </ListItemIcon>
-            <ListItemText primary={task.title} onClick={handleClickTask(task)} />
+            <ListItemText primary={task.title} secondary={dispDeadLine} onClick={handleClickTask(task)} />
           </ListItemButton>
         </ListItem>
       )
