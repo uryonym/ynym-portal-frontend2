@@ -1,4 +1,48 @@
 {
+  "plugins": [
+    "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": [
+        "./src/**/*.{js,jsx,ts,tsx}"
+      ],
+      "rules": {
+        "import/order": [
+          "error",
+          {
+            "groups": [
+              "builtin",
+              "external",
+              "parent",
+              "sibling",
+              "index",
+              "object",
+              "type"
+            ],
+            "pathGroups": [
+              {
+                "pattern": "@alias/**",
+                "group": "parent",
+                "position": "before"
+              }
+            ],
+            "alphabetize": {
+              "order": "asc"
+            },
+            "newlines-between": "always"
+          }
+        ]
+      }
+    }
+  ],
   "extends": [
     "next/core-web-vitals",
     "prettier"
