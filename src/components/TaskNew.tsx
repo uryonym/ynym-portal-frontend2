@@ -59,6 +59,7 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
       <div className={styles.container}>
         <TextField
           className={`${styles.formControl} ${styles.taskTitle}`}
+          multiline
           fullWidth
           placeholder='タスクを入力'
           variant='standard'

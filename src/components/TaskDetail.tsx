@@ -107,6 +107,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       <div className={styles.container}>
         <TextField
           className={`${styles.formControl} ${styles.taskTitle}`}
+          multiline
           fullWidth
           placeholder='タスクを入力'
           variant='standard'
