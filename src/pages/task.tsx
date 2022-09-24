@@ -1,7 +1,4 @@
-import BottomAppBar from '@/components/BottomAppBar'
-import TaskDetail from '@/components/TaskDetail'
-import TaskNew from '@/components/TaskNew'
-import { Task } from '@/models'
+import { ExpandMore } from '@mui/icons-material'
 import {
   Accordion,
   AccordionDetails,
@@ -17,12 +14,17 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import type { NextPage } from 'next'
 import { ChangeEvent, useEffect, useState } from 'react'
-import styles from '@/styles/Task.module.scss'
-import { ExpandMore } from '@mui/icons-material'
-import { fbAuth } from '@/lib/firebaseConfig'
+
+import type { NextPage } from 'next'
+
+import BottomAppBar from '@/components/BottomAppBar'
+import TaskDetail from '@/components/TaskDetail'
+import TaskNew from '@/components/TaskNew'
 import { useAuthContext } from '@/context/AuthContext'
+import { fbAuth } from '@/lib/firebaseConfig'
+import { Task } from '@/models'
+import styles from '@/styles/Task.module.scss'
 
 const Task: NextPage = () => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
@@ -131,7 +133,7 @@ const Task: NextPage = () => {
       <Drawer className={styles.drawer} anchor='right' open={isDetailOpen} onClose={() => setIsDetailOpen(false)}>
         <TaskDetail task={task} setTasks={setTasks} onClose={() => setIsDetailOpen(false)} />
       </Drawer>
-      <BottomAppBar onAddTask={() => setIsNewOpen(true)} />
+      <BottomAppBar onAddItem={() => setIsNewOpen(true)} />
     </>
   )
 }

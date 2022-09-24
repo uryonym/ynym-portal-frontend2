@@ -1,15 +1,16 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import DescriptionIcon from '@mui/icons-material/Description'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import DescriptionIcon from '@mui/icons-material/Description'
 import { AppBar, Box, Button, IconButton, InputAdornment, TextField, Toolbar } from '@mui/material'
-import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
-import axios from 'axios'
-import styles from '@/styles/TaskDetail.module.scss'
-import { Task } from '@/models'
 import { Stack } from '@mui/system'
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
+import axios from 'axios'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+
 import { fbAuth } from '@/lib/firebaseConfig'
+import { Task } from '@/models'
+import styles from '@/styles/TaskDetail.module.scss'
 
 type TaskDetailProps = {
   task: Task
