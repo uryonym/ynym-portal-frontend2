@@ -12,16 +12,17 @@ import {
   ListItemText,
   Toolbar,
 } from '@mui/material'
-import { FC, useState } from 'react'
 import Router from 'next/router'
+import { FC, useState } from 'react'
+
 import { logout } from '@/lib/firebaseAuth'
 import styles from '@/styles/BottomAppBar.module.scss'
 
 type BottomAppBarProps = {
-  onAddTask?: () => void
+  onAddItem?: () => void
 }
 
-const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
+const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const toggleDrawer = (open: boolean) => () => {
@@ -39,6 +40,11 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
         <ListItem>
           <ListItemButton onClick={() => Router.push('task')}>
             <ListItemText primary='タスク' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem>
+          <ListItemButton onClick={() => Router.push('authInfo')}>
+            <ListItemText primary='機密情報' />
           </ListItemButton>
         </ListItem>
       </List>
@@ -60,8 +66,8 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddTask }) => {
           <IconButton color='inherit' onClick={toggleDrawer(true)}>
             <Menu />
           </IconButton>
-          {onAddTask && (
-            <Fab className={styles.fabBtn} color='secondary' onClick={onAddTask}>
+          {onAddItem && (
+            <Fab className={styles.fabBtn} color='secondary' onClick={onAddItem}>
               <Add />
             </Fab>
           )}

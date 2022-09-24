@@ -1,0 +1,71 @@
+import { Drawer, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+
+import type { NextPage } from 'next'
+
+import AuthInfoNew from '@/components/AuthInfoNew'
+import BottomAppBar from '@/components/BottomAppBar'
+import { useAuthContext } from '@/context/AuthContext'
+import { fbAuth } from '@/lib/firebaseConfig'
+import { AuthInfo } from '@/models'
+import styles from '@/styles/AuthInfo.module.scss'
+
+const AuthInfo: NextPage = () => {
+  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
+
+  const [isNewOpen, setIsNewOpen] = useState<boolean>(false)
+  const [authInfos, setAuthInfos] = useState<AuthInfo[]>([])
+  const { currentUser } = useAuthContext()
+
+  useEffect(() => {
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios.get(`${apiUrl}/auth_infos`, config).then((response) => {
+        setAuthInfos(response.data)
+      })
+    })
+  }, [currentUser])
+
+  const authInfoRows = authInfos.map((authInfo: AuthInfo, index, array) => {
+    return (
+      <TableRow key={authInfo.id}>
+        <TableCell>{authInfo.service_name}</TableCell>
+        <TableCell>{authInfo.login_id}</TableCell>
+        <TableCell>{authInfo.password}</TableCell>
+        <TableCell>{authInfo.other}</TableCell>
+      </TableRow>
+    )
+  })
+
+  return (
+    <>
+      <div className={styles.container}>
+        <h2>機密情報</h2>
+        <TableContainer component={Paper}>
+          <Table className={styles.authenticateTable} size='small'>
+            <TableHead>
+              <TableRow>
+                <TableCell>サービス名</TableCell>
+                <TableCell>ログインID</TableCell>
+                <TableCell>パスワード</TableCell>
+                <TableCell>備考</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{authInfoRows}</TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+      <Drawer anchor='bottom' open={isNewOpen} onClose={() => setIsNewOpen(false)}>
+        <AuthInfoNew setAuthInfos={setAuthInfos} onClose={() => setIsNewOpen(false)} />
+      </Drawer>
+      <BottomAppBar onAddItem={() => setIsNewOpen(true)} />
+    </>
+  )
+}
+
+export default AuthInfo

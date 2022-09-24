@@ -1,0 +1,17 @@
+.container {
+  padding: 0 1rem;
+  margin-bottom: 6rem;
+}
+
+.drawer {
+  :global {
+    .MuiDrawer-paper {
+      width: 100%;
+    }
+  }
+}
+
+.authenticateTable th,
+.authenticateTable td {
+  white-space: nowrap;
+}
