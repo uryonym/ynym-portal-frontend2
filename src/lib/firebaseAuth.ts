@@ -4,6 +4,7 @@ import {
   signInWithRedirect,
   signOut,
 } from 'firebase/auth'
+
 import { fbAuth } from './firebaseConfig'
 
 export type User = {

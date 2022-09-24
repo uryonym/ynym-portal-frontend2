@@ -1,8 +1,11 @@
 import { Button } from '@mui/material'
-import type { NextPage } from 'next'
 import Router from 'next/router'
 import { useEffect } from 'react'
+
 import styles from '../styles/Home.module.scss'
+
+import type { NextPage } from 'next'
+
 import BottomAppBar from '@/components/BottomAppBar'
 import { useAuthContext } from '@/context/AuthContext'
 import { login } from '@/lib/firebaseAuth'

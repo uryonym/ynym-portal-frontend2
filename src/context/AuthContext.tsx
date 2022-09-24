@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react'
+
 import { onAuthStateChanged, User } from '@/lib/firebaseAuth'
 
 type AuthContextProps = {

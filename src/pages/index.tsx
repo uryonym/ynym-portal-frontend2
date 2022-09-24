@@ -1,10 +1,13 @@
-import BottomAppBar from '@/components/BottomAppBar'
-import { useAuthContext } from '@/context/AuthContext'
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Router from 'next/router'
 import { useEffect } from 'react'
+
 import styles from '../styles/Home.module.scss'
+
+import type { NextPage } from 'next'
+
+import BottomAppBar from '@/components/BottomAppBar'
+import { useAuthContext } from '@/context/AuthContext'
 
 const Home: NextPage = () => {
   const { currentUser } = useAuthContext()
