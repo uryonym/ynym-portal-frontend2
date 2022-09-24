@@ -38,7 +38,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       const data = {
         task: {
           title,
-          description,
+          description: description || null,
           dead_line: deadLine,
         },
       }
