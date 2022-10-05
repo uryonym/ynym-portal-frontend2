@@ -4,6 +4,8 @@ import { Stack } from '@mui/system'
 import axios from 'axios'
 import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
+import DeleteConfirmDialog from './DeleteComfirmDialog'
+
 import { fbAuth } from '@/lib/firebaseConfig'
 import { AuthInfo } from '@/models'
 import styles from '@/styles/TaskDetail.module.scss'
@@ -21,6 +23,8 @@ const AuthInfoDetail: FC<AuthInfoDetailProps> = ({ authInfo, setAuthInfos, onClo
   const [loginId, setLoginId] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [other, setOther] = useState<string>('')
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleChangeServiceName = (e: ChangeEvent<HTMLInputElement>) => {
     setServiceName(e.target.value)
@@ -63,7 +67,13 @@ const AuthInfoDetail: FC<AuthInfoDetailProps> = ({ authInfo, setAuthInfos, onClo
     })
   }
 
+  const handleClickDelete = () => {
+    setIsOpen(true)
+  }
+
   const handleDelete = () => {
+    setIsOpen(false)
+
     fbAuth.currentUser?.getIdToken(true).then((idToken) => {
       const config = {
         headers: {
@@ -78,6 +88,10 @@ const AuthInfoDetail: FC<AuthInfoDetailProps> = ({ authInfo, setAuthInfos, onClo
         })
         .catch((error) => console.log(error))
     })
+  }
+
+  const handleCloseDialog = () => {
+    setIsOpen(false)
   }
 
   useEffect(() => {
@@ -126,9 +140,10 @@ const AuthInfoDetail: FC<AuthInfoDetailProps> = ({ authInfo, setAuthInfos, onClo
           <Button variant='outlined' onClick={handleSave}>
             保存
           </Button>
-          <Button variant='outlined' color='error' onClick={handleDelete}>
+          <Button variant='outlined' color='error' onClick={handleClickDelete}>
             削除
           </Button>
+          <DeleteConfirmDialog open={isOpen} onExec={handleDelete} onClose={handleCloseDialog} />
         </Stack>
       </div>
       <AppBar className={styles.appbar} position='fixed'>
