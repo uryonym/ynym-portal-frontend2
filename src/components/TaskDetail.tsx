@@ -8,6 +8,8 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import axios from 'axios'
 import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
+import DeleteConfirmDialog from './DeleteComfirmDialog'
+
 import { fbAuth } from '@/lib/firebaseConfig'
 import { Task } from '@/models'
 import styles from '@/styles/TaskDetail.module.scss'
@@ -24,6 +26,8 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [deadLine, setDeadLine] = useState<Date | undefined | null>(undefined)
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
@@ -57,7 +61,13 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
     })
   }
 
+  const handleClickDelete = () => {
+    setIsOpen(true)
+  }
+
   const handleDelete = () => {
+    setIsOpen(false)
+
     fbAuth.currentUser?.getIdToken(true).then((idToken) => {
       const config = {
         headers: {
@@ -72,6 +82,10 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
         })
         .catch((error) => console.log(error))
     })
+  }
+
+  const handleCloseDialog = () => {
+    setIsOpen(false)
   }
 
   const handleClickComplete = () => {
@@ -159,9 +173,10 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
           <Button variant='outlined' onClick={handleSave}>
             保存
           </Button>
-          <Button variant='outlined' color='error' onClick={handleDelete}>
+          <Button variant='outlined' color='error' onClick={handleClickDelete}>
             削除
           </Button>
+          <DeleteConfirmDialog open={isOpen} onExec={handleDelete} onClose={handleCloseDialog} />
         </Stack>
       </div>
       <AppBar className={styles.appbar} position='fixed'>
