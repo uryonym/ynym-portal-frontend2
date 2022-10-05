@@ -95,6 +95,7 @@ const Task: NextPage = () => {
   const taskCompletedList = tasks
     .filter((x) => x.is_complete)
     .map((task: Task, index, array) => {
+      const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
       return (
         <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
           <ListItemButton dense>
@@ -103,6 +104,7 @@ const Task: NextPage = () => {
             </ListItemIcon>
             <ListItemText
               primary={task.title}
+              secondary={dispDeadLine}
               onClick={handleClickTask(task)}
               sx={{ textDecoration: 'line-through' }}
             />
