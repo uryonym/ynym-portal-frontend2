@@ -1,5 +1,6 @@
 import { Button, Drawer, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import axios from 'axios'
+import Router from 'next/router'
 import { useEffect, useState } from 'react'
 
 import type { NextPage } from 'next'
@@ -25,6 +26,12 @@ const AuthInfo: NextPage = () => {
     setAuthInfo(authInfo)
     setIsDetailOpen(true)
   }
+
+  useEffect(() => {
+    if (!currentUser) {
+      Router.push('/')
+    }
+  }, [currentUser])
 
   useEffect(() => {
     fbAuth.currentUser?.getIdToken(true).then((idToken) => {

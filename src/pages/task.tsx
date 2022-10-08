@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
+import Router from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
 
 import type { NextPage } from 'next'
@@ -62,6 +63,12 @@ const Task: NextPage = () => {
       })
     }
   }
+
+  useEffect(() => {
+    if (!currentUser) {
+      Router.push('/')
+    }
+  }, [currentUser])
 
   useEffect(() => {
     fbAuth.currentUser?.getIdToken(true).then((idToken) => {
