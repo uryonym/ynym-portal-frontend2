@@ -137,11 +137,11 @@ const AuthInfoDetail: FC<AuthInfoDetailProps> = ({ authInfo, setAuthInfos, onClo
           onChange={handleChangeOther}
         />
         <Stack direction='row' justifyContent='space-between'>
-          <Button variant='outlined' onClick={handleSave}>
-            保存
-          </Button>
           <Button variant='outlined' color='error' onClick={handleClickDelete}>
             削除
+          </Button>
+          <Button variant='outlined' onClick={handleSave}>
+            保存
           </Button>
           <DeleteConfirmDialog open={isOpen} onExec={handleDelete} onClose={handleCloseDialog} />
         </Stack>
