@@ -186,7 +186,7 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Button color='inherit' onClick={handleClickComplete}>
-            {task.is_complete ? '未完了' : '完了'}
+            {task.is_complete ? '未完了にする' : '完了にする'}
           </Button>
         </Toolbar>
       </AppBar>
