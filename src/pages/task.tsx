@@ -3,6 +3,8 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Button,
   Checkbox,
   Drawer,
   List,
@@ -11,11 +13,13 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material'
 import axios from 'axios'
 import Router from 'next/router'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 
 import type { NextPage } from 'next'
 
@@ -24,17 +28,28 @@ import TaskDetail from '@/components/TaskDetail'
 import TaskNew from '@/components/TaskNew'
 import { useAuthContext } from '@/context/AuthContext'
 import { fbAuth } from '@/lib/firebaseConfig'
-import { Task } from '@/models'
+import { Task, TaskList } from '@/models'
 import styles from '@/styles/Task.module.scss'
 
 const Task: NextPage = () => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
+  const { currentUser } = useAuthContext()
+
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false)
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
+  const [taskLists, setTaskLists] = useState<TaskList[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
-  const { currentUser } = useAuthContext()
+  const [tab, setTab] = useState<number>(0)
+
+  const handleChangeTab = (e: SyntheticEvent, newValue: number) => {
+    setTab(newValue)
+  }
+
+  const handleClickAddList = () => {
+    console.log('リスト追加ボタンを謳歌しました。')
+  }
 
   const handleClickTask = (task: Task) => () => {
     setTask(task)
@@ -77,64 +92,97 @@ const Task: NextPage = () => {
           Authorization: `Bearer ${idToken}`,
         },
       }
+
+      // タスクリストの取得
+      axios.get(`${apiUrl}/task_lists`, config).then((response) => {
+        setTaskLists(response.data)
+      })
+
+      // タスクの取得
       axios.get(`${apiUrl}/tasks`, config).then((response) => {
         setTasks(response.data)
       })
     })
   }, [currentUser])
 
-  const taskList = tasks
-    .filter((x) => !x.is_complete)
-    .map((task: Task, index, array) => {
-      const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
-      return (
-        <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
-          <ListItemButton dense>
-            <ListItemIcon>
-              <Checkbox disableRipple onChange={handleChangeCheck(task.id)} />
-            </ListItemIcon>
-            <ListItemText primary={task.title} secondary={dispDeadLine} onClick={handleClickTask(task)} />
-          </ListItemButton>
-        </ListItem>
-      )
-    })
+  const taskListTabs = taskLists.map((taskList: TaskList, index: number) => {
+    return <Tab label={taskList.name} key={index} id={`tab-${index}`} aria-controls={`tabpanel-${index}`} />
+  })
 
-  const taskCompletedList = tasks
-    .filter((x) => x.is_complete)
-    .map((task: Task, index, array) => {
-      const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
-      return (
-        <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
-          <ListItemButton dense>
-            <ListItemIcon>
-              <Checkbox defaultChecked disableRipple onChange={handleChangeCheck(task.id)} />
-            </ListItemIcon>
-            <ListItemText
-              primary={task.title}
-              secondary={dispDeadLine}
-              onClick={handleClickTask(task)}
-              sx={{ textDecoration: 'line-through' }}
-            />
-          </ListItemButton>
-        </ListItem>
-      )
-    })
+  const dispTasks = (tasks: Task[]) =>
+    tasks
+      .filter((x) => !x.is_complete)
+      .map((task: Task, index: number, array: Task[]) => {
+        const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
+        return (
+          <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
+            <ListItemButton dense>
+              <ListItemIcon>
+                <Checkbox disableRipple onChange={handleChangeCheck(task.id)} />
+              </ListItemIcon>
+              <ListItemText primary={task.title} secondary={dispDeadLine} onClick={handleClickTask(task)} />
+            </ListItemButton>
+          </ListItem>
+        )
+      })
+
+  const dispCompletedTasks = (tasks: Task[]) =>
+    tasks
+      .filter((x) => x.is_complete)
+      .map((task: Task, index, array) => {
+        const dispDeadLine = task.dead_line ? task.dead_line.toString() : ''
+        return (
+          <ListItem divider={array.length - 1 !== index} disablePadding key={task.id}>
+            <ListItemButton dense>
+              <ListItemIcon>
+                <Checkbox defaultChecked disableRipple onChange={handleChangeCheck(task.id)} />
+              </ListItemIcon>
+              <ListItemText
+                primary={task.title}
+                secondary={dispDeadLine}
+                onClick={handleClickTask(task)}
+                sx={{ textDecoration: 'line-through' }}
+              />
+            </ListItemButton>
+          </ListItem>
+        )
+      })
+
+  const tabPanels = taskLists.map((taskList: TaskList, index: number) => {
+    return (
+      <div role='tabpanel' hidden={tab !== index} key={index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
+        {tab === index && (
+          <Box>
+            <Paper variant='outlined' sx={{ marginBottom: '10px' }}>
+              <List>{dispTasks(taskList.tasks)}</List>
+            </Paper>
+            <Accordion variant='outlined'>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Typography>完了済み</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0 }}>
+                <List>{dispCompletedTasks(taskList.tasks)}</List>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+        )}
+      </div>
+    )
+  })
 
   return (
     <>
       <div className={styles.container}>
         <h2>タスク</h2>
-        <Paper variant='outlined' sx={{ marginBottom: '10px' }}>
-          <List>{taskList}</List>
-        </Paper>
-        <Accordion variant='outlined'>
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography>完了済み</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ padding: 0 }}>
-            <List>{taskCompletedList}</List>
-          </AccordionDetails>
-        </Accordion>
+        <Box>
+          <Tabs value={tab} onChange={handleChangeTab}>
+            {taskListTabs}
+            <Button variant='text' onClick={handleClickAddList}>
+              ＋リストの追加
+            </Button>
+          </Tabs>
+        </Box>
+        {tabPanels}
       </div>
       <Drawer anchor='bottom' open={isNewOpen} onClose={() => setIsNewOpen(false)}>
         <TaskNew setTasks={setTasks} onClose={() => setIsNewOpen(false)} />

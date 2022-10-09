@@ -1,3 +1,11 @@
+export type TaskList = {
+  id?: string
+  name: string
+  uid?: string
+  share_uid?: string
+  tasks: Task[]
+}
+
 export type Task = {
   id?: string
   title: string
