@@ -48,7 +48,7 @@ const Task: NextPage = () => {
   }
 
   const handleClickAddList = () => {
-    console.log('リスト追加ボタンを謳歌しました。')
+    console.log('リスト追加ボタンを押下しました。')
   }
 
   const handleClickTask = (task: Task) => () => {
@@ -72,7 +72,12 @@ const Task: NextPage = () => {
         axios
           .patch(`${apiUrl}/tasks/${id}`, data, config)
           .then((response) => {
-            console.log('タスクを新規作成しました。')
+            setTaskLists((prevState) => {
+              const updateState = prevState.slice(0, prevState.length)
+              const tasks = updateState[tab].tasks.map((x) => (x.id === id ? response.data : x))
+              updateState[tab].tasks = tasks
+              return updateState
+            })
           })
           .catch((error) => console.log(error))
       })

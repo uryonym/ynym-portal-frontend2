@@ -45,8 +45,9 @@ const TaskNew: FC<TaskNewProps> = ({ tab, taskListId, setTaskLists, onClose }) =
         .post(`${apiUrl}/tasks`, data, config)
         .then((response) => {
           setTaskLists((prevState) => {
-            prevState[tab] = { ...prevState[tab], tasks: [...prevState[tab].tasks, response.data] }
-            return prevState
+            const updateState = prevState.slice(0, prevState.length)
+            updateState[tab].tasks = [...updateState[tab].tasks, response.data]
+            return updateState
           })
           onClose()
         })

@@ -56,9 +56,10 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, tab, setTaskLists, onClose }) =
         .patch(`${apiUrl}/tasks/${task.id}`, data, config)
         .then((response) => {
           setTaskLists((prevState) => {
-            const tasks = prevState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
-            prevState[tab].tasks = tasks
-            return prevState
+            const updateState = prevState.slice(0, prevState.length)
+            const tasks = updateState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
+            updateState[tab].tasks = tasks
+            return updateState
           })
           onClose()
         })
@@ -83,9 +84,10 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, tab, setTaskLists, onClose }) =
         .delete(`${apiUrl}/tasks/${task.id}`, config)
         .then(() => {
           setTaskLists((prevState) => {
-            const tasks = prevState[tab].tasks.filter((x) => x.id !== task.id)
-            prevState[tab].tasks = tasks
-            return prevState
+            const updateState = prevState.slice(0, prevState.length)
+            const tasks = updateState[tab].tasks.filter((x) => x.id !== task.id)
+            updateState[tab].tasks = tasks
+            return updateState
           })
           onClose()
         })
@@ -113,9 +115,10 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, tab, setTaskLists, onClose }) =
         .patch(`${apiUrl}/tasks/${task.id}`, data, config)
         .then((response) => {
           setTaskLists((prevState) => {
-            const tasks = prevState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
-            prevState[tab].tasks = tasks
-            return prevState
+            const updateState = prevState.slice(0, prevState.length)
+            const tasks = updateState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
+            updateState[tab].tasks = tasks
+            return updateState
           })
           onClose()
         })
