@@ -40,7 +40,7 @@ const Task: NextPage = () => {
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
   const [taskLists, setTaskLists] = useState<TaskList[]>([])
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [taskListId, setTaskListId] = useState<string>()
   const [tab, setTab] = useState<number>(0)
 
   const handleChangeTab = (e: SyntheticEvent, newValue: number) => {
@@ -72,7 +72,7 @@ const Task: NextPage = () => {
         axios
           .patch(`${apiUrl}/tasks/${id}`, data, config)
           .then((response) => {
-            setTasks((tasks) => tasks.map((x) => (x.id === id ? response.data : x)))
+            console.log('タスクを新規作成しました。')
           })
           .catch((error) => console.log(error))
       })
@@ -97,13 +97,14 @@ const Task: NextPage = () => {
       axios.get(`${apiUrl}/task_lists`, config).then((response) => {
         setTaskLists(response.data)
       })
-
-      // タスクの取得
-      axios.get(`${apiUrl}/tasks`, config).then((response) => {
-        setTasks(response.data)
-      })
     })
   }, [currentUser])
+
+  useEffect(() => {
+    if (taskLists.length) {
+      setTaskListId(taskLists[tab].id)
+    }
+  }, [taskLists, tab])
 
   const taskListTabs = taskLists.map((taskList: TaskList, index: number) => {
     return <Tab label={taskList.name} key={index} id={`tab-${index}`} aria-controls={`tabpanel-${index}`} />
@@ -185,10 +186,15 @@ const Task: NextPage = () => {
         {tabPanels}
       </div>
       <Drawer anchor='bottom' open={isNewOpen} onClose={() => setIsNewOpen(false)}>
-        <TaskNew setTasks={setTasks} onClose={() => setIsNewOpen(false)} />
+        <TaskNew
+          tab={tab}
+          taskListId={taskListId || ''}
+          setTaskLists={setTaskLists}
+          onClose={() => setIsNewOpen(false)}
+        />
       </Drawer>
       <Drawer className={styles.drawer} anchor='right' open={isDetailOpen} onClose={() => setIsDetailOpen(false)}>
-        <TaskDetail task={task} setTasks={setTasks} onClose={() => setIsDetailOpen(false)} />
+        <TaskDetail task={task} tab={tab} setTaskLists={setTaskLists} onClose={() => setIsDetailOpen(false)} />
       </Drawer>
       <BottomAppBar onAddItem={() => setIsNewOpen(true)} />
     </>

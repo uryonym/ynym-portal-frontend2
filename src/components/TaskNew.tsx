@@ -6,15 +6,17 @@ import axios from 'axios'
 import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import { fbAuth } from '@/lib/firebaseConfig'
-import { Task } from '@/models'
+import { TaskList } from '@/models'
 import styles from '@/styles/TaskNew.module.scss'
 
 type TaskNewProps = {
-  setTasks: Dispatch<SetStateAction<Task[]>>
+  tab: number
+  taskListId: string
+  setTaskLists: Dispatch<SetStateAction<TaskList[]>>
   onClose: () => void
 }
 
-const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
+const TaskNew: FC<TaskNewProps> = ({ tab, taskListId, setTaskLists, onClose }) => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
   const [title, setTitle] = useState<string>('')
@@ -31,6 +33,7 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
         task: {
           title,
           dead_line: deadLine,
+          task_list_id: taskListId,
         },
       }
       const config = {
@@ -41,7 +44,10 @@ const TaskNew: FC<TaskNewProps> = ({ setTasks, onClose }) => {
       axios
         .post(`${apiUrl}/tasks`, data, config)
         .then((response) => {
-          setTasks((prevState) => [...prevState, response.data])
+          setTaskLists((prevState) => {
+            prevState[tab] = { ...prevState[tab], tasks: [...prevState[tab].tasks, response.data] }
+            return prevState
+          })
           onClose()
         })
         .catch((error) => console.log(error))

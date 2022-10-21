@@ -11,16 +11,17 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useState } from '
 import DeleteConfirmDialog from './DeleteComfirmDialog'
 
 import { fbAuth } from '@/lib/firebaseConfig'
-import { Task } from '@/models'
+import { Task, TaskList } from '@/models'
 import styles from '@/styles/TaskDetail.module.scss'
 
 type TaskDetailProps = {
   task: Task
-  setTasks: Dispatch<SetStateAction<Task[]>>
+  tab: number
+  setTaskLists: Dispatch<SetStateAction<TaskList[]>>
   onClose: () => void
 }
 
-const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
+const TaskDetail: FC<TaskDetailProps> = ({ task, tab, setTaskLists, onClose }) => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
   const [title, setTitle] = useState<string>('')
@@ -54,7 +55,11 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       axios
         .patch(`${apiUrl}/tasks/${task.id}`, data, config)
         .then((response) => {
-          setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
+          setTaskLists((prevState) => {
+            const tasks = prevState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
+            prevState[tab].tasks = tasks
+            return prevState
+          })
           onClose()
         })
         .catch((error) => console.log(error))
@@ -77,7 +82,11 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       axios
         .delete(`${apiUrl}/tasks/${task.id}`, config)
         .then(() => {
-          setTasks((prevState) => prevState.filter((x) => x.id !== task.id))
+          setTaskLists((prevState) => {
+            const tasks = prevState[tab].tasks.filter((x) => x.id !== task.id)
+            prevState[tab].tasks = tasks
+            return prevState
+          })
           onClose()
         })
         .catch((error) => console.log(error))
@@ -103,7 +112,11 @@ const TaskDetail: FC<TaskDetailProps> = ({ task, setTasks, onClose }) => {
       axios
         .patch(`${apiUrl}/tasks/${task.id}`, data, config)
         .then((response) => {
-          setTasks((prevState) => prevState.map((x) => (x.id === task.id ? response.data : x)))
+          setTaskLists((prevState) => {
+            const tasks = prevState[tab].tasks.map((x) => (x.id === task.id ? response.data : x))
+            prevState[tab].tasks = tasks
+            return prevState
+          })
           onClose()
         })
         .catch((error) => console.log(error))
