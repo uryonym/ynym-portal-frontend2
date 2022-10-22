@@ -25,6 +25,7 @@ import type { NextPage } from 'next'
 
 import BottomAppBar from '@/components/BottomAppBar'
 import TaskDetail from '@/components/TaskDetail'
+import TaskListNew from '@/components/TaskListNew'
 import TaskNew from '@/components/TaskNew'
 import { useAuthContext } from '@/context/AuthContext'
 import { fbAuth } from '@/lib/firebaseConfig'
@@ -38,6 +39,7 @@ const Task: NextPage = () => {
 
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false)
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
+  const [isListNewOpen, setIsListNewOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
   const [taskLists, setTaskLists] = useState<TaskList[]>([])
   const [taskListId, setTaskListId] = useState<string>()
@@ -48,7 +50,7 @@ const Task: NextPage = () => {
   }
 
   const handleClickAddList = () => {
-    console.log('リスト追加ボタンを押下しました。')
+    setIsListNewOpen(true)
   }
 
   const handleClickTask = (task: Task) => () => {
@@ -181,11 +183,8 @@ const Task: NextPage = () => {
       <div className={styles.container}>
         <h2>タスク</h2>
         <Box>
-          <Tabs value={tab} onChange={handleChangeTab}>
+          <Tabs value={tab} variant='scrollable' onChange={handleChangeTab}>
             {taskListTabs}
-            <Button variant='text' onClick={handleClickAddList}>
-              ＋リストの追加
-            </Button>
           </Tabs>
         </Box>
         {tabPanels}
@@ -200,6 +199,9 @@ const Task: NextPage = () => {
       </Drawer>
       <Drawer className={styles.drawer} anchor='right' open={isDetailOpen} onClose={() => setIsDetailOpen(false)}>
         <TaskDetail task={task} tab={tab} setTaskLists={setTaskLists} onClose={() => setIsDetailOpen(false)} />
+      </Drawer>
+      <Drawer anchor='bottom' open={isListNewOpen} onClose={() => setIsListNewOpen(false)}>
+        <TaskListNew setTaskLists={setTaskLists} onClose={() => setIsListNewOpen(false)} />
       </Drawer>
       <BottomAppBar onAddItem={() => setIsNewOpen(true)} />
     </>
