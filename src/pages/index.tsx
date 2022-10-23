@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.scss'
 
 import type { NextPage } from 'next'
 
-import BottomAppBar from '@/components/BottomAppBar'
+import BottomAppBar from '@/components/AppBar/BottomAppBar'
 import { useAuthContext } from '@/context/AuthContext'
 
 const Home: NextPage = () => {

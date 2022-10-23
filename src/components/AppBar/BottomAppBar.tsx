@@ -12,25 +12,28 @@ import {
   ListItemText,
   Toolbar,
 } from '@mui/material'
-import Router from 'next/router'
-import { FC, useState } from 'react'
+import Router, { useRouter } from 'next/router'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
+
+import TaskMenu from './TaskMenu'
 
 import { logout } from '@/lib/firebaseAuth'
+import { TaskList } from '@/models'
 import styles from '@/styles/BottomAppBar.module.scss'
 
 type BottomAppBarProps = {
   onAddItem?: () => void
+  taskListId?: string
+  setTaskLists?: Dispatch<SetStateAction<TaskList[]>>
 }
 
 const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem }) => {
+  const router = useRouter()
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  const toggleDrawer = (open: boolean) => () => {
-    setIsOpen(open)
-  }
-
   const list = (
-    <Box onClick={toggleDrawer(false)}>
+    <Box onClick={() => setIsOpen(false)}>
       <List className={styles.list}>
         <ListItem>
           <ListItemButton onClick={() => Router.push('/')}>
@@ -63,19 +66,21 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem }) => {
     <>
       <AppBar className={styles.appbar} position='fixed'>
         <Toolbar>
-          <IconButton color='inherit' onClick={toggleDrawer(true)}>
+          <IconButton color='inherit' onClick={() => setIsOpen(true)}>
             <Menu />
           </IconButton>
+          <Drawer anchor='bottom' open={isOpen} onClose={() => setIsOpen(false)}>
+            {list}
+          </Drawer>
           {onAddItem && (
             <Fab className={styles.fabBtn} color='secondary' onClick={onAddItem}>
               <Add />
             </Fab>
           )}
+          <Box sx={{ flexGrow: 1 }} />
+          {router.pathname == '/task' && <TaskMenu />}
         </Toolbar>
       </AppBar>
-      <Drawer anchor='bottom' open={isOpen} onClose={toggleDrawer(false)}>
-        {list}
-      </Drawer>
     </>
   )
 }

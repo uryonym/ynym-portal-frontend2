@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 
 import type { NextPage } from 'next'
 
+import BottomAppBar from '@/components/AppBar/BottomAppBar'
 import AuthInfoDetail from '@/components/AuthInfoDetail'
 import AuthInfoNew from '@/components/AuthInfoNew'
-import BottomAppBar from '@/components/BottomAppBar'
 import { useAuthContext } from '@/context/AuthContext'
 import { fbAuth } from '@/lib/firebaseConfig'
 import { AuthInfo } from '@/models'

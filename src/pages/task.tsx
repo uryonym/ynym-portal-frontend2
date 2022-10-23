@@ -4,7 +4,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   Checkbox,
   Drawer,
   List,
@@ -23,7 +22,7 @@ import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 
 import type { NextPage } from 'next'
 
-import BottomAppBar from '@/components/BottomAppBar'
+import BottomAppBar from '@/components/AppBar/BottomAppBar'
 import TaskDetail from '@/components/TaskDetail'
 import TaskListNew from '@/components/TaskListNew'
 import TaskNew from '@/components/TaskNew'
