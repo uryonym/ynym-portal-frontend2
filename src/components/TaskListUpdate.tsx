@@ -6,12 +6,13 @@ import { fbAuth } from '@/lib/firebaseConfig'
 import { TaskList } from '@/models'
 import styles from '@/styles/TaskListNew.module.scss'
 
-type TaskListNewProps = {
+type TaskListUpdateProps = {
+  taskListId: string
   setTaskLists: Dispatch<SetStateAction<TaskList[]>>
   onClose: () => void
 }
 
-const TaskListNew: FC<TaskListNewProps> = ({ setTaskLists, onClose }) => {
+const TaskListUpdate: FC<TaskListUpdateProps> = ({ taskListId, setTaskLists, onClose }) => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
   const [taskListName, setTaskListName] = useState<string>('')
@@ -34,7 +35,7 @@ const TaskListNew: FC<TaskListNewProps> = ({ setTaskLists, onClose }) => {
         },
       }
       axios
-        .post(`${apiUrl}/task_lists`, data, config)
+        .post(`${apiUrl}/task_list/${taskListId}`, data, config)
         .then((response) => {
           setTaskLists((prevState) => {
             const taskList = { ...response.data, tasks: [] }

@@ -38,7 +38,6 @@ const Task: NextPage = () => {
 
   const [isNewOpen, setIsNewOpen] = useState<boolean>(false)
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
-  const [isListNewOpen, setIsListNewOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
   const [taskLists, setTaskLists] = useState<TaskList[]>([])
   const [taskListId, setTaskListId] = useState<string>()
@@ -46,10 +45,6 @@ const Task: NextPage = () => {
 
   const handleChangeTab = (e: SyntheticEvent, newValue: number) => {
     setTab(newValue)
-  }
-
-  const handleClickAddList = () => {
-    setIsListNewOpen(true)
   }
 
   const handleClickTask = (task: Task) => () => {
@@ -199,10 +194,7 @@ const Task: NextPage = () => {
       <Drawer className={styles.drawer} anchor='right' open={isDetailOpen} onClose={() => setIsDetailOpen(false)}>
         <TaskDetail task={task} tab={tab} setTaskLists={setTaskLists} onClose={() => setIsDetailOpen(false)} />
       </Drawer>
-      <Drawer anchor='bottom' open={isListNewOpen} onClose={() => setIsListNewOpen(false)}>
-        <TaskListNew setTaskLists={setTaskLists} onClose={() => setIsListNewOpen(false)} />
-      </Drawer>
-      <BottomAppBar onAddItem={() => setIsNewOpen(true)} />
+      <BottomAppBar onAddItem={() => setIsNewOpen(true)} taskListId={taskListId} setTaskLists={setTaskLists} />
     </>
   )
 }

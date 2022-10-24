@@ -27,7 +27,7 @@ type BottomAppBarProps = {
   setTaskLists?: Dispatch<SetStateAction<TaskList[]>>
 }
 
-const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem }) => {
+const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem, taskListId, setTaskLists }) => {
   const router = useRouter()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -78,7 +78,7 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem }) => {
             </Fab>
           )}
           <Box sx={{ flexGrow: 1 }} />
-          {router.pathname == '/task' && <TaskMenu />}
+          {router.pathname == '/task' && taskListId && setTaskLists && <TaskMenu taskListId={taskListId} setTaskLists={setTaskLists} />}
         </Toolbar>
       </AppBar>
     </>
