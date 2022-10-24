@@ -11,12 +11,12 @@ import styles from '@/styles/TaskNew.module.scss'
 
 type TaskNewProps = {
   tab: number
-  taskListId: string
+  taskList: TaskList
   setTaskLists: Dispatch<SetStateAction<TaskList[]>>
   onClose: () => void
 }
 
-const TaskNew: FC<TaskNewProps> = ({ tab, taskListId, setTaskLists, onClose }) => {
+const TaskNew: FC<TaskNewProps> = ({ tab, taskList, setTaskLists, onClose }) => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
   const [title, setTitle] = useState<string>('')
@@ -33,7 +33,7 @@ const TaskNew: FC<TaskNewProps> = ({ tab, taskListId, setTaskLists, onClose }) =
         task: {
           title,
           dead_line: deadLine,
-          task_list_id: taskListId,
+          task_list_id: taskList.id,
         },
       }
       const config = {

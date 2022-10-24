@@ -23,11 +23,11 @@ import styles from '@/styles/BottomAppBar.module.scss'
 
 type BottomAppBarProps = {
   onAddItem?: () => void
-  taskListId?: string
+  taskList?: TaskList
   setTaskLists?: Dispatch<SetStateAction<TaskList[]>>
 }
 
-const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem, taskListId, setTaskLists }) => {
+const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem, taskList, setTaskLists }) => {
   const router = useRouter()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -78,7 +78,9 @@ const BottomAppBar: FC<BottomAppBarProps> = ({ onAddItem, taskListId, setTaskLis
             </Fab>
           )}
           <Box sx={{ flexGrow: 1 }} />
-          {router.pathname == '/task' && taskListId && setTaskLists && <TaskMenu taskListId={taskListId} setTaskLists={setTaskLists} />}
+          {router.pathname == '/task' && taskList && setTaskLists && (
+            <TaskMenu taskList={taskList} setTaskLists={setTaskLists} />
+          )}
         </Toolbar>
       </AppBar>
     </>

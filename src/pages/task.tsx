@@ -24,7 +24,6 @@ import type { NextPage } from 'next'
 
 import BottomAppBar from '@/components/AppBar/BottomAppBar'
 import TaskDetail from '@/components/TaskDetail'
-import TaskListNew from '@/components/TaskListNew'
 import TaskNew from '@/components/TaskNew'
 import { useAuthContext } from '@/context/AuthContext'
 import { fbAuth } from '@/lib/firebaseConfig'
@@ -40,7 +39,7 @@ const Task: NextPage = () => {
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [task, setTask] = useState<Task>({ title: '' })
   const [taskLists, setTaskLists] = useState<TaskList[]>([])
-  const [taskListId, setTaskListId] = useState<string>()
+  const [taskList, setTaskList] = useState<TaskList>()
   const [tab, setTab] = useState<number>(0)
 
   const handleChangeTab = (e: SyntheticEvent, newValue: number) => {
@@ -103,7 +102,7 @@ const Task: NextPage = () => {
 
   useEffect(() => {
     if (taskLists.length) {
-      setTaskListId(taskLists[tab].id)
+      setTaskList(taskLists[tab])
     }
   }, [taskLists, tab])
 
@@ -184,17 +183,14 @@ const Task: NextPage = () => {
         {tabPanels}
       </div>
       <Drawer anchor='bottom' open={isNewOpen} onClose={() => setIsNewOpen(false)}>
-        <TaskNew
-          tab={tab}
-          taskListId={taskListId || ''}
-          setTaskLists={setTaskLists}
-          onClose={() => setIsNewOpen(false)}
-        />
+        {taskList && (
+          <TaskNew tab={tab} taskList={taskList} setTaskLists={setTaskLists} onClose={() => setIsNewOpen(false)} />
+        )}
       </Drawer>
       <Drawer className={styles.drawer} anchor='right' open={isDetailOpen} onClose={() => setIsDetailOpen(false)}>
         <TaskDetail task={task} tab={tab} setTaskLists={setTaskLists} onClose={() => setIsDetailOpen(false)} />
       </Drawer>
-      <BottomAppBar onAddItem={() => setIsNewOpen(true)} taskListId={taskListId} setTaskLists={setTaskLists} />
+      <BottomAppBar onAddItem={() => setIsNewOpen(true)} taskList={taskList} setTaskLists={setTaskLists} />
     </>
   )
 }

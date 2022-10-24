@@ -7,15 +7,15 @@ import { TaskList } from '@/models'
 import styles from '@/styles/TaskListNew.module.scss'
 
 type TaskListUpdateProps = {
-  taskListId: string
+  taskList: TaskList
   setTaskLists: Dispatch<SetStateAction<TaskList[]>>
   onClose: () => void
 }
 
-const TaskListUpdate: FC<TaskListUpdateProps> = ({ taskListId, setTaskLists, onClose }) => {
+const TaskListUpdate: FC<TaskListUpdateProps> = ({ taskList, setTaskLists, onClose }) => {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
 
-  const [taskListName, setTaskListName] = useState<string>('')
+  const [taskListName, setTaskListName] = useState<string>(taskList.name)
   const taskListNameInputRef = useRef<HTMLInputElement>()
 
   const handleChangeTaskListName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +35,10 @@ const TaskListUpdate: FC<TaskListUpdateProps> = ({ taskListId, setTaskLists, onC
         },
       }
       axios
-        .post(`${apiUrl}/task_list/${taskListId}`, data, config)
-        .then((response) => {
+        .patch(`${apiUrl}/task_lists/${taskList.id}`, data, config)
+        .then(() => {
           setTaskLists((prevState) => {
-            const taskList = { ...response.data, tasks: [] }
-            return [...prevState, taskList]
+            return prevState.map((x) => (x.id === taskList.id ? { ...x, name: taskListName } : x))
           })
           onClose()
         })
@@ -78,4 +77,4 @@ const TaskListUpdate: FC<TaskListUpdateProps> = ({ taskListId, setTaskLists, onC
   )
 }
 
-export default TaskListNew
+export default TaskListUpdate
