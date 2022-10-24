@@ -1,10 +1,13 @@
 import { MoreVert } from '@mui/icons-material'
 import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import axios from 'axios'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 
+import DeleteConfirmDialog from '../DeleteComfirmDialog'
 import TaskListNew from '../TaskListNew'
 import TaskListUpdate from '../TaskListUpdate'
 
+import { fbAuth } from '@/lib/firebaseConfig'
 import { TaskList } from '@/models'
 import styles from '@/styles/BottomAppBar.module.scss'
 
@@ -14,9 +17,12 @@ type TaskMenuProps = {
 }
 
 const TaskMenu: FC<TaskMenuProps> = ({ taskList, setTaskLists }) => {
+  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.productionUrl : process.env.developmentUrl
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isListNewOpen, setIsListNewOpen] = useState<boolean>(false)
   const [isListUpdateOpen, setIsListUpdateOpen] = useState<boolean>(false)
+  const [isListDeleteOpen, setIsListDeleteOpen] = useState<boolean>(false)
 
   const handleClickAddList = () => {
     setIsListNewOpen(true)
@@ -24,6 +30,34 @@ const TaskMenu: FC<TaskMenuProps> = ({ taskList, setTaskLists }) => {
 
   const handleClickRenameList = () => {
     setIsListUpdateOpen(true)
+  }
+
+  const handleClickDeleteList = () => {
+    setIsListDeleteOpen(true)
+  }
+
+  const handleDeleteList = () => {
+    setIsListDeleteOpen(false)
+
+    fbAuth.currentUser?.getIdToken(true).then((idToken) => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+      axios
+        .delete(`${apiUrl}/task_lists/${taskList.id}`, config)
+        .then(() => {
+          setTaskLists((prevState) => {
+            return prevState.filter((x) => x.id !== taskList.id)
+          })
+        })
+        .catch((error) => console.log(error))
+    })
+  }
+
+  const handleCloseDialog = () => {
+    setIsListDeleteOpen(false)
   }
 
   const list = (
@@ -43,7 +77,7 @@ const TaskMenu: FC<TaskMenuProps> = ({ taskList, setTaskLists }) => {
       <Divider />
       <List className={styles.list}>
         <ListItem>
-          <ListItemButton onClick={() => console.log('リストを削除します')}>
+          <ListItemButton onClick={handleClickDeleteList}>
             <ListItemText primary='リストを削除' />
           </ListItemButton>
         </ListItem>
@@ -65,6 +99,7 @@ const TaskMenu: FC<TaskMenuProps> = ({ taskList, setTaskLists }) => {
       <Drawer anchor='bottom' open={isListUpdateOpen} onClose={() => setIsListUpdateOpen(false)}>
         <TaskListUpdate taskList={taskList} setTaskLists={setTaskLists} onClose={() => setIsListUpdateOpen(false)} />
       </Drawer>
+      <DeleteConfirmDialog open={isListDeleteOpen} onExec={handleDeleteList} onClose={handleCloseDialog} />
     </>
   )
 }
